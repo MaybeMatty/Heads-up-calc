@@ -1,0 +1,117 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 <!DOCTYPE html>\
+<html lang="en">\
+<head>\
+  <meta charset="UTF-8" />\
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />\
+  <title>Calculus Heads Up</title>\
+  <style>\
+    body \{\
+      font-family: Arial, sans-serif;\
+      text-align: center;\
+      background: #121212;\
+      color: white;\
+      padding: 2rem;\
+    \}\
+    #term \{\
+      font-size: 2rem;\
+      margin-top: 30vh;\
+    \}\
+    #startBtn \{\
+      font-size: 1.2rem;\
+      padding: 1rem 2rem;\
+      margin-top: 2rem;\
+      background: #4caf50;\
+      color: white;\
+      border: none;\
+      border-radius: 10px;\
+    \}\
+  </style>\
+</head>\
+<body>\
+  <h1>Calculus Heads Up</h1>\
+  <div id="term">Press Start</div>\
+  <button id="startBtn">Start Game</button>\
+\
+  <script>\
+    const terms = [\
+      "Derivative",\
+      "Integral",\
+      "Chain Rule",\
+      "Limit",\
+      "Critical Point",\
+      "Inflection Point",\
+      "Mean Value Theorem",\
+      "Riemann Sum",\
+      "Implicit Differentiation",\
+      "Related Rates"\
+    ];\
+\
+    let currentIndex = 0;\
+    let canReadMotion = false;\
+    let lastOrientation = 0;\
+\
+    const termDisplay = document.getElementById("term");\
+    const startBtn = document.getElementById("startBtn");\
+\
+    function showNextTerm() \{\
+      if (currentIndex < terms.length) \{\
+        termDisplay.innerText = terms[currentIndex];\
+      \} else \{\
+        termDisplay.innerText = "You're done! \uc0\u55356 \u57225 ";\
+        window.removeEventListener("deviceorientation", handleTilt);\
+      \}\
+    \}\
+\
+    function handleTilt(event) \{\
+      if (!canReadMotion) return;\
+\
+      const beta = event.beta; // front-back tilt\
+\
+      if (beta > 70) \{\
+        // Head down = correct\
+        currentIndex++;\
+        showNextTerm();\
+      \} else if (beta < 20) \{\
+        // Head up = no\
+        currentIndex++;\
+        showNextTerm();\
+      \}\
+    \}\
+\
+    async function requestPermission() \{\
+      if (typeof DeviceMotionEvent !== "undefined" && typeof DeviceMotionEvent.requestPermission === "function") \{\
+        try \{\
+          const response = await DeviceMotionEvent.requestPermission();\
+          if (response === "granted") \{\
+            canReadMotion = true;\
+            window.addEventListener("deviceorientation", handleTilt);\
+            showNextTerm();\
+          \} else \{\
+            alert("Motion access denied.");\
+          \}\
+        \} catch (err) \{\
+          alert("Motion access error: " + err);\
+        \}\
+      \} else \{\
+        // Android or older iOS\
+        canReadMotion = true;\
+        window.addEventListener("deviceorientation", handleTilt);\
+        showNextTerm();\
+      \}\
+    \}\
+\
+    startBtn.addEventListener("click", () => \{\
+      startBtn.style.display = "none";\
+      requestPermission();\
+    \});\
+  </script>\
+</body>\
+</html>\
+}
